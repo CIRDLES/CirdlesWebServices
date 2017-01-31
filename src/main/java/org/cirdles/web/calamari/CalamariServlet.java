@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
+import org.springframework.web.bind.ServletRequestUtils;
 
 /**
  *
@@ -69,9 +70,9 @@ public class CalamariServlet extends HttpServlet {
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "attachment; filename=calamari-reports.zip");
 
-        boolean useSBM = Boolean.parseBoolean(request.getParameter("useSBM"));
-        boolean useLinFits = Boolean.parseBoolean(request.getParameter("useLinFits"));
-        String firstLetterRM = request.getParameter("firstLetterRM");
+        boolean useSBM = ServletRequestUtils.getBooleanParameter(request, "useSBM", true);
+        boolean useLinFits = ServletRequestUtils.getBooleanParameter(request, "userLinFits", false);
+        String firstLetterRM = ServletRequestUtils.getStringParameter(request, "firstLetterRM", "T");
         Part filePart = request.getPart("prawnFile");
 
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
