@@ -3,20 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cirdles.web.ambapo;
+package org.cirdles.webServices.calamari;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.nio.file.Paths;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import org.apache.commons.io.IOUtils;
+import org.springframework.web.bind.ServletRequestUtils;
 
 /**
  *
  * @author ty
  */
-public class AmbapoServlet extends HttpServlet {
+@MultipartConfig
+public class CalamariServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,7 +38,6 @@ public class AmbapoServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -59,7 +66,27 @@ public class AmbapoServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        response.setContentType("application/zip");
+        response.setHeader("Content-Disposition", "attachment; filename=calamari-reports.zip");
+
+        boolean useSBM = ServletRequestUtils.getBooleanParameter(request, "useSBM", true);
+        boolean useLinFits = ServletRequestUtils.getBooleanParameter(request, "userLinFits", false);
+        String firstLetterRM = ServletRequestUtils.getStringParameter(request, "firstLetterRM", "T");
+        Part filePart = request.getPart("prawnFile");
+
+        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+        InputStream fileStream = filePart.getInputStream();
+
+        PrawnFileHandlerService handler = new PrawnFileHandlerService();
+        try {
+            File file = handler.generateReports(fileName, fileStream, useSBM, useLinFits, firstLetterRM).toFile();
+            response.setContentLengthLong(file.length());
+            IOUtils.copy(new FileInputStream(file), response.getOutputStream());
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+
     }
 
     /**

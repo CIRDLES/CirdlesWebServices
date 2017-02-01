@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cirdles.web.calamari;
+package org.cirdles.webServices.calamari;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -30,10 +27,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import javax.xml.bind.JAXBException;
-import org.apache.commons.io.IOUtils;
 import static org.cirdles.calamari.constants.CalamariConstants.DEFAULT_PRAWNFILE_NAME;
 import org.cirdles.calamari.core.CalamariReportsEngine;
 import org.cirdles.calamari.core.PrawnFileHandler;
@@ -80,30 +74,6 @@ public class PrawnFileHandlerService {
         return zipFilePath;
     }
 
-    // saved for future use
-//    private void unZip(Path zippedFilePath, Path target) throws IOException {
-//        Map<String, String> zip_properties = new HashMap<>();
-//        zip_properties.put("create", "false");
-//
-//        URI zip_disk = URI.create("jar:file:" + zippedFilePath);
-//
-//        try (FileSystem zipFileSystem = FileSystems.newFileSystem(zip_disk, zip_properties)) {
-//            final Path root = zipFileSystem.getPath("/");
-//
-//            //walk the zip file tree and copy files to the destination
-//            Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-//                @Override
-//                public FileVisitResult visitFile(Path file,
-//                        BasicFileAttributes attrs) throws IOException {
-//                    final Path destFile = Paths.get(target.toString(),
-//                            file.toString());
-//                    //System.out.printf("Extracting file %s to %s\n", file, destFile);
-//                    Files.copy(file, destFile, StandardCopyOption.REPLACE_EXISTING);
-//                    return FileVisitResult.CONTINUE;
-//                }
-//            });
-//        }
-//    }
     public Path generateReports(
             String myFileName,
             InputStream prawnFile,
