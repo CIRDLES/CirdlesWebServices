@@ -105,7 +105,7 @@ public class PrawnFileHandlerService {
 
         Files.delete(prawnFilePath);
 
-        Path reportsFolder = Paths.get(reportsEngine.getFolderToWriteCalamariReportsPath()).getParent();
+        Path reportsFolder = Paths.get(reportsEngine.getFolderToWriteCalamariReportsPath()).getParent().toAbsolutePath();
 
         Path reports = Files.list(reportsFolder)
                 .findFirst().orElseThrow(() -> new IllegalStateException());

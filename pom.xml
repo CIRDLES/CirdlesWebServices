@@ -34,13 +34,17 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>redhat.com</id>
+            <url>https://maven.repository.redhat.com/ga/</url>
+        </repository>
     </repositories>
     
     <dependencies>
         <dependency>
             <groupId>com.github.bowring</groupId>
             <artifactId>Calamari</artifactId>
-            <version>v1.2.1</version>
+            <version>b4838c8</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.netbeans.external</groupId>
