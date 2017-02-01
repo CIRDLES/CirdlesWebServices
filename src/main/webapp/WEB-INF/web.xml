@@ -2,11 +2,11 @@
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
         <servlet-name>CalamariServlet</servlet-name>
-        <servlet-class>org.cirdles.web.calamari.CalamariServlet</servlet-class>
+        <servlet-class>org.cirdles.webServices.calamari.CalamariServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AmbapoServlet</servlet-name>
-        <servlet-class>org.cirdles.web.ambapo.AmbapoServlet</servlet-class>
+        <servlet-class>org.cirdles.webServices.ambapo.AmbapoServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CalamariServlet</servlet-name>
