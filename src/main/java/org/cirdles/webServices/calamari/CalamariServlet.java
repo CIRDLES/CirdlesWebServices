@@ -10,12 +10,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.Scanner;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.bind.ServletRequestUtils;
 
@@ -77,12 +79,25 @@ public class CalamariServlet extends HttpServlet {
 
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
         InputStream fileStream = filePart.getInputStream();
-
+        File myFile = new File(fileName);
+        
         PrawnFileHandlerService handler = new PrawnFileHandlerService();
+        String fileExt = FilenameUtils.getExtension(fileName);
+        
         try {
-            File file = handler.generateReports(fileName, fileStream, useSBM, useLinFits, firstLetterRM).toFile();
-            response.setContentLengthLong(file.length());
-            IOUtils.copy(new FileInputStream(file), response.getOutputStream());
+            File report = null;
+            if(fileExt.equals("zip"))
+            {
+                report = handler.generateReportsZip(fileName, fileStream, useSBM, useLinFits, firstLetterRM).toFile();
+            }
+            else if(fileExt.equals("xml"))
+            {
+                report = handler.generateReports(fileName, fileStream, useSBM, useLinFits, firstLetterRM).toFile();
+            }
+
+            response.setContentLengthLong(report.length());
+            IOUtils.copy(new FileInputStream(report), response.getOutputStream());
+            
         } catch (Exception e) {
             System.err.println(e);
         }
