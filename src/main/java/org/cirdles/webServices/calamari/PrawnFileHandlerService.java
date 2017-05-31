@@ -16,8 +16,11 @@
 package org.cirdles.webServices.calamari;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -27,7 +30,10 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import javax.xml.bind.JAXBException;
+import org.apache.commons.io.FilenameUtils;
 import static org.cirdles.calamari.constants.CalamariConstants.DEFAULT_PRAWNFILE_NAME;
 import org.cirdles.calamari.core.CalamariReportsEngine;
 import org.cirdles.calamari.core.PrawnFileHandler;
@@ -73,6 +79,52 @@ public class PrawnFileHandlerService {
 
         return zipFilePath;
     }
+      
+    public static String extract(File inFile, File destination) throws IOException
+    {
+        File outFile = null;
+        OutputStream out = null;
+        ZipInputStream zis = null;
+
+        try{
+            //open infile for reading
+            zis = new ZipInputStream( new FileInputStream(inFile) );
+            ZipEntry entry = null;
+            
+            //checks first entry exists
+            if((entry = zis.getNextEntry()) != null)
+            {
+                String outFilename = entry.getName();
+                outFile = new File(destination, outFilename);
+                
+                try{
+                    //open outFile for writing
+                    out = new FileOutputStream(outFile);
+                    byte[] buff = new byte[2048];
+                    int len = 0;
+
+                    while((len = zis.read(buff)) > 0)
+                    {
+                        out.write(buff, 0, len);
+                    }
+                }
+                
+                finally{
+                    //close outFile
+                    if(out != null)
+                        out.close();
+                }
+            }
+        }
+        finally{ 
+            //close zip file
+            if(zis != null)
+                zis.close();
+        }
+        
+        return outFile.getPath();
+        
+    }
 
     public Path generateReports(
             String myFileName,
@@ -89,7 +141,7 @@ public class PrawnFileHandlerService {
         Path uploadDirectory = Files.createTempDirectory("upload");
         Path prawnFilePath = uploadDirectory.resolve("prawn-file.xml");
         Files.copy(prawnFile, prawnFilePath);
-
+        
         Path calamarirReportsFolderAlias = Files.createTempDirectory("reports-destination");
         File reportsDestinationFile = calamarirReportsFolderAlias.toFile();
 
@@ -115,5 +167,50 @@ public class PrawnFileHandlerService {
 
         return reportsZip;
     }
+    
+    public Path generateReportsZip(
+            String myFileName,
+            InputStream prawnFile,
+            boolean useSBM,
+            boolean userLinFits,
+            String firstLetterRM) throws IOException, JAXBException, SAXException {
 
+        String fileName = myFileName;
+        if (myFileName == null) {
+            fileName = DEFAULT_PRAWNFILE_NAME;
+        }
+        
+        Path uploadDirectory = Files.createTempDirectory("upload");
+        Path prawnFilePathZip = uploadDirectory.resolve("prawn-file.zip");
+        
+        Files.copy(prawnFile, prawnFilePathZip);
+        
+        //file path string to extracted xml
+        String extract = extract(prawnFilePathZip.toFile(), uploadDirectory.toFile());
+        
+        Path calamarirReportsFolderAlias = Files.createTempDirectory("reports-destination");
+        File reportsDestinationFile = calamarirReportsFolderAlias.toFile();
+
+        reportsEngine.setFolderToWriteCalamariReports(reportsDestinationFile);
+        fileName = FilenameUtils.removeExtension(fileName);
+        
+        // this gives reportengine the name of the Prawnfile for use in report names
+        prawnFileHandler.initReportsEngineWithCurrentPrawnFileName(fileName);
+        prawnFileHandler.writeReportsFromPrawnFile(extract,
+                useSBM,
+                userLinFits,
+                firstLetterRM);
+
+        Files.delete(prawnFilePathZip);
+
+        Path reportsFolder = Paths.get(reportsEngine.getFolderToWriteCalamariReportsPath()).getParent().toAbsolutePath();
+
+        Path reports = Files.list(reportsFolder)
+                .findFirst().orElseThrow(() -> new IllegalStateException());
+        
+        Path reportsZip = zip(reports);
+        recursiveDelete(reports);
+
+        return reportsZip;
+    }
 }
