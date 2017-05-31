@@ -80,50 +80,50 @@ public class PrawnFileHandlerService {
         return zipFilePath;
     }
       
-    public static String extract(File file, File destination) throws IOException {
+    public static String extract(File inFile, File destination) throws IOException
+    {
         File outFile = null;
-        ZipInputStream in = null;
         OutputStream out = null;
-        try {
-        // Open the ZIP file
-            in = new ZipInputStream(new FileInputStream(file));
+        ZipInputStream zis = null;
 
-            // Get the first entry
+        try{
+            //open infile for reading
+            zis = new ZipInputStream( new FileInputStream(inFile) );
             ZipEntry entry = null;
-
-            while ((entry = in.getNextEntry()) != null) {
+            
+            //checks first entry exists
+            if((entry = zis.getNextEntry()) != null)
+            {
                 String outFilename = entry.getName();
-                
-                // Open the output file
                 outFile = new File(destination, outFilename);
                 
-                if (entry.isDirectory()) {
-                outFile.mkdirs();
-                } else {
-                out = new FileOutputStream(outFile);
+                try{
+                    //open outFile for writing
+                    out = new FileOutputStream(outFile);
+                    byte[] buff = new byte[2048];
+                    int len = 0;
 
-                // Transfer bytes from the ZIP file to the output file
-                byte[] buf = new byte[1024];
-                int len;
-
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
+                    while((len = zis.read(buff)) > 0)
+                    {
+                        out.write(buff, 0, len);
+                    }
                 }
-                // Close the stream
-                out.close();
+                
+                finally{
+                    //close outFile
+                    if(out != null)
+                        out.close();
                 }
-            }
-        } 
-        
-        finally {
-            if (in != null) {
-                in.close();
-            }
-            if (out != null) {
-                out.close();
             }
         }
+        finally{ 
+            //close zip file
+            if(zis != null)
+                zis.close();
+        }
+        
         return outFile.getPath();
+        
     }
 
     public Path generateReports(
