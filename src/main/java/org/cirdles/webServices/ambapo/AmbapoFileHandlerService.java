@@ -15,13 +15,17 @@
  */
 package org.cirdles.webServices.ambapo;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.xml.bind.JAXBException;
+import org.cirdles.ambapo.Coordinate;
+import org.cirdles.ambapo.UTM;
 import static org.cirdles.calamari.constants.CalamariConstants.DEFAULT_PRAWNFILE_NAME;
 import static org.cirdles.calamari.utilities.FileUtilities.recursiveDelete;
 import org.xml.sax.SAXException;
@@ -32,7 +36,7 @@ import org.xml.sax.SAXException;
  */
 public class AmbapoFileHandlerService {
     
-    public Path generateReports(
+    public Path generateBulkOutput(
             String myFileName,
             InputStream ambapoFile) throws IOException, JAXBException, SAXException {
 
@@ -44,10 +48,62 @@ public class AmbapoFileHandlerService {
         Path uploadDirectory = Files.createTempDirectory("upload");
         Path ambapoFilePath = uploadDirectory.resolve("ambapo-file.csv");
         Files.copy(ambapoFile, ambapoFilePath);
-        
-        System.out.println("Ambapo File Path: " + ambapoFilePath);
-        
+               
         return ambapoFilePath;
+    }
+    
+    public File generateSoloOutputUTM(UTM utm) throws IOException {
+        
+        File tempOutputFile = File.createTempFile("output", ".txt");
+        
+        BufferedWriter bw = new BufferedWriter(new FileWriter(tempOutputFile));
+        
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("Easting: ");
+        sb.append(utm.getEasting());
+        
+        sb.append("\nNorthing: ");
+        sb.append(utm.getNorthing());
+        
+        sb.append("\nZone Number: ");
+        sb.append(utm.getZoneNumber());
+        
+        sb.append("\nZone Letter: ");
+        sb.append(utm.getZoneLetter());
+        
+        sb.append("\nHemisphere: ");
+        sb.append(utm.getHemisphere());
+        
+        bw.write(sb.toString());
+        
+        bw.close();
+        
+        return tempOutputFile;
+        
+    }
+    
+    public File generateSoloOutputLatLong(Coordinate coord) throws IOException {
+        File tempOutputFile = File.createTempFile("output", ".txt");
+        
+        BufferedWriter bw = new BufferedWriter(new FileWriter(tempOutputFile));
+        
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("Latitude: ");
+        sb.append(coord.getLatitude());
+        
+        sb.append("\nLongitude: ");
+        sb.append(coord.getLongitude());
+        
+        sb.append("\nDatum: ");
+        sb.append(coord.getDatum().getDatum());
+        
+        bw.write(sb.toString());
+        
+        bw.close();
+        
+        return tempOutputFile;
     }
     
 }
