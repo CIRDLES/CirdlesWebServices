@@ -36,6 +36,8 @@ import org.cirdles.ambapo.LatLongToUTM;
 import org.cirdles.ambapo.UTM;
 import org.cirdles.ambapo.UTMToLatLong;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.json.JSONObject;
+
 
 /**
  *
@@ -165,53 +167,111 @@ public class AmbapoServlet extends HttpServlet {
                 
                 AmbapoFileHandlerService handler = new AmbapoFileHandlerService();
                 
-                switch (typeOfConversion)
-                {
+                
+                String jsonStr = ServletRequestUtils.getStringParameter(request, "json", "");
+                if(!jsonStr.isEmpty()){
+                    JSONObject json = new JSONObject(jsonStr);
+                    
+                    typeOfConversion = json.getString("typeOfConversion");
                     
                     
-                    case LATLONG_TO_UTM:
-                        fromLatitude = new BigDecimal(ServletRequestUtils.getRequiredDoubleParameter(request, "latitude"));
-                        fromLongitude = new BigDecimal(ServletRequestUtils.getRequiredDoubleParameter(request, "longitude"));
-                        fromDatum = Datum.valueOf(ServletRequestUtils.getStringParameter(request, "fromDatum", "WGS84"));
-                        
-                        utm = LatLongToUTM.convert(fromLatitude, fromLongitude, fromDatum.getDatum());
-                        
-                        outputFile = handler.generateSoloOutputUTM(utm);
-                        br = new BufferedReader(new FileReader(outputFile));
+                    switch (typeOfConversion)
+                    {
+                        case LATLONG_TO_UTM:
+                            fromLatitude = new BigDecimal(json.getDouble("latitude"));
+                            fromLongitude = new BigDecimal(json.getDouble("longitude"));
+                            fromDatum = Datum.valueOf(json.getString("fromDatum"));
 
-                        break;
-                    case LATLONG_TO_LATLONG:
-                        fromLatitude = new BigDecimal(ServletRequestUtils.getRequiredDoubleParameter(request, "latitude"));
-                        fromLongitude = new BigDecimal(ServletRequestUtils.getRequiredDoubleParameter(request, "longitude"));
-                        fromDatum = Datum.valueOf(ServletRequestUtils.getStringParameter(request, "fromDatum", "WGS84"));
-                        toDatum = Datum.valueOf(ServletRequestUtils.getStringParameter(request, "toDatum", "WGS84"));
-                        
-                        latAndLong = LatLongToLatLong.convert(fromLatitude, fromLongitude, fromDatum.toString(), toDatum.toString());
-                        
-                        outputFile = handler.generateSoloOutputLatLong(latAndLong);
-                        br = new BufferedReader(new FileReader(outputFile));
-                        
-                        break;
-                    case UTM_TO_LATLONG:
-                        toDatum = Datum.valueOf(ServletRequestUtils.getStringParameter(request, "toDatum", "WGS84"));
-                        easting = new BigDecimal(ServletRequestUtils.getRequiredDoubleParameter(request, "easting"));
-                        northing = new BigDecimal(ServletRequestUtils.getRequiredDoubleParameter(request, "northing"));
-                        zoneNumber = ServletRequestUtils.getRequiredIntParameter(request, "zoneNumber");
-                        
-                        zoneLetter = ServletRequestUtils.getStringParameter(request, "zoneLetter", "*").charAt(0);
-                        hemisphere = ServletRequestUtils.getStringParameter(request, "hemisphere", "*").charAt(0);
-                        
-                        utm = new UTM(easting, northing, hemisphere, zoneNumber, zoneLetter);
-                        
-                        latAndLong = UTMToLatLong.convert(utm, toDatum.getDatum());
-                        
-                        outputFile = handler.generateSoloOutputLatLong(latAndLong);
-                        br = new BufferedReader(new FileReader(outputFile));
-                                                
-                        break;
+                            utm = LatLongToUTM.convert(fromLatitude, fromLongitude, fromDatum.getDatum());
+
+                            outputFile = handler.generateSoloOutputUTM(utm);
+                            br = new BufferedReader(new FileReader(outputFile));
+
+                            break;
+                        case LATLONG_TO_LATLONG:
+                            fromLatitude = fromLatitude = new BigDecimal(json.getDouble("latitude"));
+                            fromLongitude = new BigDecimal(json.getDouble("longitude"));
+                            fromDatum = Datum.valueOf(json.getString("fromDatum"));
+                            toDatum = Datum.valueOf(json.getString("toDatum"));
+
+                            latAndLong = LatLongToLatLong.convert(fromLatitude, fromLongitude, fromDatum.toString(), toDatum.toString());
+
+                            outputFile = handler.generateSoloOutputLatLong(latAndLong);
+                            br = new BufferedReader(new FileReader(outputFile));
+
+                            break;
+                        case UTM_TO_LATLONG:
+                            toDatum = Datum.valueOf(json.getString("toDatum"));
+                            easting = new BigDecimal(json.getDouble("easting"));
+                            northing = new BigDecimal(json.getDouble("northing"));
+                            zoneNumber = json.getInt("zoneNumber");
+
+                            zoneLetter = json.getString("zoneLetter").charAt(0);
+                            hemisphere = json.getString("hemisphere").charAt(0);
+
+                            utm = new UTM(easting, northing, hemisphere, zoneNumber, zoneLetter);
+
+                            latAndLong = UTMToLatLong.convert(utm, toDatum.getDatum());
+
+                            outputFile = handler.generateSoloOutputLatLong(latAndLong);
+                            br = new BufferedReader(new FileReader(outputFile));
+
+                            break;
+                    }
                     
+                }else{
+                    
+                    switch (typeOfConversion)
+                    {
+
+
+                        case LATLONG_TO_UTM:
+                            fromLatitude = new BigDecimal(ServletRequestUtils.getRequiredDoubleParameter(request, "latitude"));
+                            fromLongitude = new BigDecimal(ServletRequestUtils.getRequiredDoubleParameter(request, "longitude"));
+                            fromDatum = Datum.valueOf(ServletRequestUtils.getStringParameter(request, "fromDatum", "WGS84"));
+
+                            utm = LatLongToUTM.convert(fromLatitude, fromLongitude, fromDatum.getDatum());
+
+                            outputFile = handler.generateSoloOutputUTM(utm);
+                            br = new BufferedReader(new FileReader(outputFile));
+
+                            break;
+                        case LATLONG_TO_LATLONG:
+                            fromLatitude = new BigDecimal(ServletRequestUtils.getRequiredDoubleParameter(request, "latitude"));
+                            fromLongitude = new BigDecimal(ServletRequestUtils.getRequiredDoubleParameter(request, "longitude"));
+                            fromDatum = Datum.valueOf(ServletRequestUtils.getStringParameter(request, "fromDatum", "WGS84"));
+                            toDatum = Datum.valueOf(ServletRequestUtils.getStringParameter(request, "toDatum", "WGS84"));
+
+                            latAndLong = LatLongToLatLong.convert(fromLatitude, fromLongitude, fromDatum.toString(), toDatum.toString());
+
+                            outputFile = handler.generateSoloOutputLatLong(latAndLong);
+                            br = new BufferedReader(new FileReader(outputFile));
+
+                            break;
+                        case UTM_TO_LATLONG:
+                            toDatum = Datum.valueOf(ServletRequestUtils.getStringParameter(request, "toDatum", "WGS84"));
+                            easting = new BigDecimal(ServletRequestUtils.getRequiredDoubleParameter(request, "easting"));
+                            northing = new BigDecimal(ServletRequestUtils.getRequiredDoubleParameter(request, "northing"));
+                            zoneNumber = ServletRequestUtils.getRequiredIntParameter(request, "zoneNumber");
+
+                            zoneLetter = ServletRequestUtils.getStringParameter(request, "zoneLetter", "*").charAt(0);
+                            hemisphere = ServletRequestUtils.getStringParameter(request, "hemisphere", "*").charAt(0);
+
+                            utm = new UTM(easting, northing, hemisphere, zoneNumber, zoneLetter);
+
+                            latAndLong = UTMToLatLong.convert(utm, toDatum.getDatum());
+
+                            outputFile = handler.generateSoloOutputLatLong(latAndLong);
+                            br = new BufferedReader(new FileReader(outputFile));
+
+                            break;
+
+
+                    }
                     
                 }
+                
+                
                 
                 response.setContentLengthLong(outputFile.length());
                 IOUtils.copy(br, out);
