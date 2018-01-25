@@ -115,6 +115,11 @@ public class AmbapoServlet extends HttpServlet {
             throws ServletException, IOException 
     {
         boolean isBulk = ServletRequestUtils.getBooleanParameter(request, "isBulk", true);
+        
+        String jsonStr = ServletRequestUtils.getStringParameter(request, "json", "");
+        if(!jsonStr.isEmpty())
+            isBulk = false;
+        
         String typeOfConversion = ServletRequestUtils.getStringParameter(request, "typeOfConversion", LATLONG_TO_UTM);
         
         if(isBulk) {
@@ -165,10 +170,8 @@ public class AmbapoServlet extends HttpServlet {
                 File outputFile = null;
                 BufferedReader br = null;
                 
-                AmbapoFileHandlerService handler = new AmbapoFileHandlerService();
+                AmbapoFileHandlerService handler = new AmbapoFileHandlerService();                
                 
-                
-                String jsonStr = ServletRequestUtils.getStringParameter(request, "json", "");
                 if(!jsonStr.isEmpty()){
                     JSONObject json = new JSONObject(jsonStr);
                     
