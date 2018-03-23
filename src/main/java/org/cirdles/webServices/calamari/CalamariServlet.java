@@ -15,6 +15,7 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -67,6 +68,8 @@ public class CalamariServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        HttpSession session = request.getSession();
 
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "attachment; filename=calamari-reports.zip");
@@ -85,12 +88,10 @@ public class CalamariServlet extends HttpServlet {
         
         try {
             File report = null;
-            if(fileExt.equals("zip"))
-            {
+            if(fileExt.equals("zip")) {
                 report = handler.generateReportsZip(fileName, fileStream, useSBM, useLinFits, firstLetterRM).toFile();
             }
-            else if(fileExt.equals("xml"))
-            {
+            else if(fileExt.equals("xml")) {
                 report = handler.generateReports(fileName, fileStream, useSBM, useLinFits, firstLetterRM).toFile();
             }
 
@@ -110,7 +111,7 @@ public class CalamariServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Calamari Servlet";
     }// </editor-fold>
 
 }
