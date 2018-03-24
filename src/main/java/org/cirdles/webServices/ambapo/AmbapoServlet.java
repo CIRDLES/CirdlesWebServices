@@ -11,8 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.cirdles.webServices.requestUtils.*;
 import org.cirdles.ambapo.*;
 import org.json.JSONException;
@@ -55,11 +53,15 @@ public class AmbapoServlet extends HttpServlet {
         String[] pieces = uri.split("/");
         // first item will be "", second item will be "ambapo"
         if (pieces.length >= 4) {
+            String param1 = pieces[2];
+            String param2 = pieces[3];
             // UTM -> LatLng
-            if (pieces[2].equals("utm") && pieces[3].equals("latlng")) {
+            if (param1.equals("utm") && param2.equals("latlng")) {
                 json = handleUtmToLatlng(request, response);
-            } else if (pieces[2].equals("latlng") && pieces[3].equals("utm")) {
+            } else if (param1.equals("latlng") && param2.equals("utm")) {
                 json = handleLatlngToUtm(request, response);
+            } else if (param1.equals("latlng") && param2.equals("latlng")) {
+                json = handleLatlngToLatlng(request, response);
             }
         } else {
             json = JSONUtils.createResponseErrorJSON("Invalid URI");
@@ -120,6 +122,35 @@ public class AmbapoServlet extends HttpServlet {
                     responseJson.put("hemisphere", utm.getHemisphere());
                     responseJson.put("zoneNumber", utm.getZoneNumber());
                     responseJson.put("zoneLetter", utm.getZoneLetter());
+                } catch (Exception e) {
+                    responseJson = JSONUtils.createResponseErrorJSON(e.getMessage());
+                }
+            } else {
+                responseJson = JSONUtils.createResponseErrorJSON("Invalid request parameters");
+            }
+        } catch (JSONException e) {
+            responseJson = JSONUtils.createResponseErrorJSON("Invalid request parameters: " + e.getMessage());
+        }
+        return responseJson;
+    }
+
+    private JSONObject handleLatlngToLatlng(HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        JSONObject json = JSONUtils.extractRequestJSON(request);
+        JSONObject responseJson = new JSONObject();
+        try {
+            BigDecimal latitude = BigDecimal.valueOf(json.getDouble("latitude"));
+            BigDecimal longitude = BigDecimal.valueOf(json.getDouble("longitude"));
+            String fromDatum = json.getString("fromDatum");
+            String toDatum = json.getString("toDatum");
+            if (latitude != null && longitude != null
+                    && fromDatum != null && !fromDatum.isEmpty()
+                    && toDatum != null && !toDatum.isEmpty()) {
+                try {
+                    Coordinate coord = LatLongToLatLong.convert(latitude, longitude, fromDatum, toDatum);
+                    responseJson.put("latitude", coord.getLatitude());
+                    responseJson.put("longitude", coord.getLongitude());
+                    responseJson.put("datum", coord.getDatum());
                 } catch (Exception e) {
                     responseJson = JSONUtils.createResponseErrorJSON(e.getMessage());
                 }
