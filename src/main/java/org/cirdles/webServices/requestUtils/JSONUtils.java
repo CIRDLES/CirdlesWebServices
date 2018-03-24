@@ -23,10 +23,17 @@ import org.json.JSONObject;
  *
  * @author ty
  */
-public class RequestJSONUtils {
+public class JSONUtils {
     public static JSONObject extractRequestJSON(HttpServletRequest request) throws IOException {
         String body = request.getReader().lines()
                 .reduce("", (accumulator, actual) -> accumulator + actual);
         return new JSONObject(body);
+    }
+    
+    public static JSONObject createResponseErrorJSON(String message) {
+        JSONObject json = new JSONObject();
+        json.put("error", true);
+        json.put("message", message);
+        return json;
     }
 }
