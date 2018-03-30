@@ -14,7 +14,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AmbapoServlet</servlet-name>
-        <url-pattern>/ambapo</url-pattern>
+        <url-pattern>/ambapo/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
