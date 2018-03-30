@@ -79,6 +79,21 @@
             <version>3.0.4.RELEASE</version>
         </dependency>
         <dependency>
+	    <groupId>com.github.CIRDLES</groupId>
+	    <artifactId>Ambapo</artifactId>
+	    <version>master-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.netbeans.external</groupId>
+                    <artifactId>AbsoluteLayout</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.external</groupId>
+                    <artifactId>swing-layout-1.0.4</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20180130</version>
