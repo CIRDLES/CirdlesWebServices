@@ -51,17 +51,17 @@ public class AmbapoServlet extends HttpServlet {
         JSONObject json = new JSONObject();
         String uri = request.getRequestURI().toLowerCase();
         String[] pieces = uri.split("/");
-        // first item will be "", second item will be "ambapo"
-        if (pieces.length >= 4) {
-            String param1 = pieces[2];
-            String param2 = pieces[3];
-            // UTM -> LatLng
-            if (param1.equals("utm") && param2.equals("latlng")) {
-                json = handleUtmToLatlng(request, response);
-            } else if (param1.equals("latlng") && param2.equals("utm")) {
-                json = handleLatlngToUtm(request, response);
-            } else if (param1.equals("latlng") && param2.equals("latlng")) {
-                json = handleLatlngToLatlng(request, response);
+        if (pieces.length == 4) {
+            int lastIndex = pieces.length - 1;
+            String param1 = pieces[lastIndex - 1];
+            String param2 = pieces[lastIndex];
+            // UTM -> LatLong
+            if (param1.equals("utm") && param2.equals("latlong")) {
+                json = handleUtmToLatlong(request, response);
+            } else if (param1.equals("latlong") && param2.equals("utm")) {
+                json = handleLatlongToUtm(request, response);
+            } else if (param1.equals("latlong") && param2.equals("latlong")) {
+                json = handleLatlongToLatlong(request, response);
             }
         } else {
             json = JSONUtils.createResponseErrorJSON("Invalid URI");
@@ -70,7 +70,7 @@ public class AmbapoServlet extends HttpServlet {
         response.getWriter().println(json);
     }
 
-    private JSONObject handleUtmToLatlng(HttpServletRequest request,
+    private JSONObject handleUtmToLatlong(HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         JSONObject json = JSONUtils.extractRequestJSON(request);
         JSONObject responseJson = new JSONObject();
@@ -94,7 +94,7 @@ public class AmbapoServlet extends HttpServlet {
                     responseJson.put("longitude", coord.getLongitude());
                     responseJson.put("datum", coord.getDatum());
                 } catch (Exception e) {
-                    responseJson = JSONUtils.createResponseErrorJSON(e.getMessage());
+                    responseJson = JSONUtils.createResponseErrorJSON("Error converting: " + e.toString());
                 }
             } else {
                 responseJson = JSONUtils.createResponseErrorJSON("Invalid request parameters");
@@ -105,7 +105,7 @@ public class AmbapoServlet extends HttpServlet {
         return responseJson;
     }
 
-    private JSONObject handleLatlngToUtm(HttpServletRequest request,
+    private JSONObject handleLatlongToUtm(HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         JSONObject json = JSONUtils.extractRequestJSON(request);
         JSONObject responseJson = new JSONObject();
@@ -123,7 +123,7 @@ public class AmbapoServlet extends HttpServlet {
                     responseJson.put("zoneNumber", utm.getZoneNumber());
                     responseJson.put("zoneLetter", utm.getZoneLetter());
                 } catch (Exception e) {
-                    responseJson = JSONUtils.createResponseErrorJSON(e.getMessage());
+                    responseJson = JSONUtils.createResponseErrorJSON("Error converting: " + e.toString());
                 }
             } else {
                 responseJson = JSONUtils.createResponseErrorJSON("Invalid request parameters");
@@ -134,7 +134,7 @@ public class AmbapoServlet extends HttpServlet {
         return responseJson;
     }
 
-    private JSONObject handleLatlngToLatlng(HttpServletRequest request,
+    private JSONObject handleLatlongToLatlong(HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         JSONObject json = JSONUtils.extractRequestJSON(request);
         JSONObject responseJson = new JSONObject();
@@ -152,7 +152,7 @@ public class AmbapoServlet extends HttpServlet {
                     responseJson.put("longitude", coord.getLongitude());
                     responseJson.put("datum", coord.getDatum());
                 } catch (Exception e) {
-                    responseJson = JSONUtils.createResponseErrorJSON(e.getMessage());
+                    responseJson = JSONUtils.createResponseErrorJSON("Error converting: " + e.toString());
                 }
             } else {
                 responseJson = JSONUtils.createResponseErrorJSON("Invalid request parameters");
