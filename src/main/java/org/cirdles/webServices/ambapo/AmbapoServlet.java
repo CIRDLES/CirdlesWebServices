@@ -51,7 +51,7 @@ public class AmbapoServlet extends HttpServlet {
         JSONObject json = new JSONObject();
         String uri = request.getRequestURI().toLowerCase();
         String[] pieces = uri.split("/");
-        if (pieces.length == 4) {
+        if (pieces.length >= 4) {
             int lastIndex = pieces.length - 1;
             String param1 = pieces[lastIndex - 1];
             String param2 = pieces[lastIndex];
