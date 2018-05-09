@@ -36,4 +36,30 @@ The deployment script will then perform the following:
 * [Maven](https://maven.apache.org/) - Dependency Management
 * [JitPack](https://jitpack.io/) - Package repository for github/Maven
 * [NGINX](https://www.nginx.com/) - Server Platform / Traffic director
-* [Tomcat 9](http://tomcat.apache.org/) - Java Servlet Container / Server
+* [Tomcat 9](http://tomcat.apache.org/) - Java Servlet Container
+
+
+## Project Structure
+
+```
+CirdlesWebServices
+├── .gitignore
+├── LICENSE
+├── README.md
+├── pom.xml (configuration, maven)
+├── src/main
+|   ├── webapp (configuration files)
+|       ├── WEB-INF
+|           ├── web.xml (endpoints, etc.)
+|       ├── META-INF
+|           ├── context.xml (Tomcat-specific)
+|       ├── index.html
+|   ├── java/org/cirdles/webServices (servlets and utilities)
+|       ├── ambapo
+|           ├── AmbapoServlet.java
+|       ├── calamari
+|           ├── CalamariServlet.java
+|           ├── PrawnFileHandlerService.java
+|       ├── requestUtils
+|           ├── JSONUtils.java
+```
