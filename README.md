@@ -62,4 +62,8 @@ CirdlesWebServices
 |           ├── PrawnFileHandlerService.java
 |       ├── requestUtils
 |           ├── JSONUtils.java
+|       ├── squid
+|           ├── SquidReportingService.java
+|           ├── SquidReportingServlet.java
+|           ├── ZipUtility.java
 ```
