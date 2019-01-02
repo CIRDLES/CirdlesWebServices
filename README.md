@@ -21,7 +21,7 @@ The deployment script is executed at 2:00AM every day, but if immeadiate updates
 
 ```BASH
 ssh $USER@cirdles.cs.cofc.edu
-sudo ./user/local/bin/deploy
+sudo ./usr/local/bin/deploy
 ```
 
 The deployment script will then perform the following:
