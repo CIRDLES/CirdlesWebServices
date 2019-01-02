@@ -29,6 +29,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
+import org.cirdles.squid.web.SquidReportingService;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.xml.sax.SAXException;
 

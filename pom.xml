@@ -90,6 +90,11 @@
 	    <artifactId>squidCore</artifactId>
 	    <version>-SNAPSHOT</version>
 	</dependency>
+        <dependency>
+	    <groupId>com.github.cirdles.squid</groupId>
+	    <artifactId>squidWeb</artifactId>
+	    <version>-SNAPSHOT</version>
+	</dependency>
     </dependencies>
 
     <build>
