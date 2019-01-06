@@ -89,6 +89,7 @@ public class SquidReportingServlet extends HttpServlet {
         boolean useLinFits = ServletRequestUtils.getBooleanParameter(request, "userLinFits", false);
         String refMatFilter = ServletRequestUtils.getStringParameter(request, "refMatFilter", "");
         String concRefMatFilter = ServletRequestUtils.getStringParameter(request, "concRefMatFilter", "");
+        String preferredIndexIsotopeName = ServletRequestUtils.getStringParameter(request, "prefIndexIso", "PB_204");
         Part filePart = request.getPart("prawnFile");
         Part filePart2 = request.getPart("taskFile");
 
@@ -100,7 +101,9 @@ public class SquidReportingServlet extends HttpServlet {
 
         try {
             File report = null;
-            report = handler.generateReports(fileName, fileStream, fileStream2, useSBM, useLinFits, refMatFilter, concRefMatFilter).toFile();
+            report = handler.generateReports(
+                    fileName, fileStream, fileStream2, useSBM, useLinFits, refMatFilter, concRefMatFilter,
+                    preferredIndexIsotopeName).toFile();
 
             response.setContentLengthLong(report.length());
             IOUtils.copy(new FileInputStream(report), response.getOutputStream());
