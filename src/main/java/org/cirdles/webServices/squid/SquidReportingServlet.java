@@ -19,7 +19,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -29,6 +31,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.cirdles.squid.web.SquidReportingService;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.xml.sax.SAXException;
@@ -104,6 +107,17 @@ public class SquidReportingServlet extends HttpServlet {
             report = handler.generateReports(
                     fileName, fileStream, fileStream2, useSBM, useLinFits, refMatFilter, concRefMatFilter,
                     preferredIndexIsotopeName).toFile();
+
+            // this writes to catalinahome / bin
+            File localReportsZipFile = new File("LOCAL_ZIP.zip");
+            Files.copy(report.toPath(), localReportsZipFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            // now if Linux. we are going to assume cirdles.cs.cofc.edu and write to Google Drive for now
+            if (SystemUtils.IS_OS_LINUX) {
+                String[] arguments = new String[]{
+                    "/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "LOCAL_ZIP.zip"};
+                Process proc = new ProcessBuilder(arguments).start();
+            }
 
             response.setContentLengthLong(report.length());
             IOUtils.copy(new FileInputStream(report), response.getOutputStream());
