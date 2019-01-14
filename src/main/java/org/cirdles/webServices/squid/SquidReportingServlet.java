@@ -19,9 +19,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -119,7 +119,8 @@ public class SquidReportingServlet extends HttpServlet {
                 if (SystemUtils.IS_OS_LINUX) {
                     String[] arguments = new String[]{
                         "/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", report.getPath()};
-                    Process proc = new ProcessBuilder(arguments).start();
+                    List<String> argList = Arrays.asList(arguments);
+                    Process proc = new ProcessBuilder(argList).start();
                 }
             } catch (IOException iOException) {
             }
