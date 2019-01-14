@@ -108,17 +108,12 @@ public class SquidReportingServlet extends HttpServlet {
                     fileName, fileStream, fileStream2, useSBM, useLinFits, refMatFilter, concRefMatFilter,
                     preferredIndexIsotopeName).toFile();
 
-//            // this writes to catalinahome / bin
-//            try {
-//                File localReportsZipFile = new File("LOCAL_ZIP.zip");
-//                Files.copy(report.toPath(), localReportsZipFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-//            } catch (IOException iOException) {
-//            }
             // now if Linux. we are going to assume cirdles.cs.cofc.edu and write to Google Drive for now
+            // note: gdrive runs as root: sudo chmod +s gdrive
             try {
                 if (SystemUtils.IS_OS_LINUX) {
                     String[] arguments = new String[]{
-                        "/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", report.getPath()};
+                        "/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "./temp/reports.zip"};
                     List<String> argList = Arrays.asList(arguments);
                     Process proc = new ProcessBuilder(argList).start();
                 }
@@ -130,8 +125,7 @@ public class SquidReportingServlet extends HttpServlet {
             
         } catch (IOException | JAXBException | SAXException e) {
             System.err.println(e);
-        }
-        
+        }       
     }
 
     /**
