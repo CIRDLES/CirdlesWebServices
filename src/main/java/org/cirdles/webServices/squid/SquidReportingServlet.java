@@ -111,12 +111,12 @@ public class SquidReportingServlet extends HttpServlet {
             // now if Linux. we are going to assume cirdles.cs.cofc.edu and write to Google Drive for now
             // note: gdrive runs as root: sudo chmod +s gdrive
             try {
-                if (SystemUtils.IS_OS_LINUX) {
+                //if (SystemUtils.IS_OS_LINUX) {
                     String[] arguments = new String[]{
                         "/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "/opt/tomcat9/temp/reports.zip"};
                     List<String> argList = Arrays.asList(arguments);
                     Process proc = new ProcessBuilder(argList).start();
-                }
+                //}
             } catch (IOException iOException) {
             }
 
