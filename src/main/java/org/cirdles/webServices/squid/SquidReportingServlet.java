@@ -113,7 +113,7 @@ public class SquidReportingServlet extends HttpServlet {
             try {
                 if (SystemUtils.IS_OS_LINUX) {
                     String[] arguments = new String[]{
-                        "/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "./temp/reports.zip"};
+                        "/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", report.getPath()};
                     List<String> argList = Arrays.asList(arguments);
                     Process proc = new ProcessBuilder(argList).start();
                 }
