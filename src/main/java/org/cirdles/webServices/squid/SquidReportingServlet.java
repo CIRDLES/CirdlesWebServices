@@ -83,11 +83,11 @@ public class SquidReportingServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
         HttpSession session = request.getSession();
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "attachment; filename=squid-reports.zip");
-
+        
         boolean useSBM = ServletRequestUtils.getBooleanParameter(request, "useSBM", true);
         boolean useLinFits = ServletRequestUtils.getBooleanParameter(request, "userLinFits", false);
         String refMatFilter = ServletRequestUtils.getStringParameter(request, "refMatFilter", "");
@@ -95,23 +95,25 @@ public class SquidReportingServlet extends HttpServlet {
         String preferredIndexIsotopeName = ServletRequestUtils.getStringParameter(request, "prefIndexIso", "PB_204");
         Part filePart = request.getPart("prawnFile");
         Part filePart2 = request.getPart("taskFile");
-
+        
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
         InputStream fileStream = filePart.getInputStream();
         InputStream fileStream2 = filePart2.getInputStream();
-
+        
         SquidReportingService handler = new SquidReportingService();
-
+        
         try {
             File report = null;
             report = handler.generateReports(
                     fileName, fileStream, fileStream2, useSBM, useLinFits, refMatFilter, concRefMatFilter,
                     preferredIndexIsotopeName).toFile();
 
-//            // this writes to catalinahome / bin
-//            File localReportsZipFile = new File("LOCAL_ZIP.zip");
-//            Files.copy(report.toPath(), localReportsZipFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-//
+            // this writes to catalinahome / bin
+            try {
+                File localReportsZipFile = new File("LOCAL_ZIP.zip");
+                Files.copy(report.toPath(), localReportsZipFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException iOException) {
+            }
 //            // now if Linux. we are going to assume cirdles.cs.cofc.edu and write to Google Drive for now
 //            if (SystemUtils.IS_OS_LINUX) {
 //                String[] arguments = new String[]{
@@ -121,11 +123,11 @@ public class SquidReportingServlet extends HttpServlet {
 
             response.setContentLengthLong(report.length());
             IOUtils.copy(new FileInputStream(report), response.getOutputStream());
-
+            
         } catch (IOException | JAXBException | SAXException e) {
             System.err.println(e);
         }
-
+        
     }
 
     /**
