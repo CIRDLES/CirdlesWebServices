@@ -117,7 +117,8 @@ public class SquidReportingServlet extends HttpServlet {
                     System.out.println("Thread Running");
                     try {
                         String[] arguments = new String[]{
-                            "/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "/opt/tomcat9/temp/reports.zip"};
+                            "/home/gdrive", "mkdir", "JIMMY"};
+                            //"/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "/opt/tomcat9/temp/reports.zip"};
                         List<String> argList = Arrays.asList(arguments);
                         Process process = new ProcessBuilder(argList).start();
 
