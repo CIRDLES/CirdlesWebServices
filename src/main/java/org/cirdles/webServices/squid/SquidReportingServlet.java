@@ -112,23 +112,24 @@ public class SquidReportingServlet extends HttpServlet {
 
             // now if Linux. we are going to assume cirdles.cs.cofc.edu and write to Google Drive for now
             // note: gdrive runs as root: sudo chmod +s gdrive
-            try {
-                //if (SystemUtils.IS_OS_LINUX) {
-                String[] arguments = new String[]{
-                    "/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "/opt/tomcat9/temp/reports.zip"};
-                List<String> argList = Arrays.asList(arguments);
-                Process process = new ProcessBuilder(argList).start();
+            Thread thread = new Thread() {
+                public void run() {
+                    System.out.println("Thread Running");
+                    try {
+                        String[] arguments = new String[]{
+                            "/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "/opt/tomcat9/temp/reports.zip"};
+                        List<String> argList = Arrays.asList(arguments);
+                        Process process = new ProcessBuilder(argList).start();
 
-//                // https://www.baeldung.com/run-shell-command-in-java
-//                StreamGobbler streamGobbler
-//                        = new StreamGobbler(process.getErrorStream(), System.err::println);
-//                Executors.newSingleThreadExecutor().submit(streamGobbler);
-                int exitCode = process.waitFor();
-                assert exitCode == 0;
+                        int exitCode = process.waitFor();
+                        assert exitCode == 0;
 
-                //}
-            } catch (IOException | InterruptedException iOException) {
-            }
+                    } catch (IOException | InterruptedException iOException) {
+                    }
+                }
+            };
+
+            thread.start();
 
             response.setContentLengthLong(report.length());
             IOUtils.copy(new FileInputStream(report), response.getOutputStream());
@@ -147,22 +148,4 @@ public class SquidReportingServlet extends HttpServlet {
     public String getServletInfo() {
         return "Squid Reporting Servlet";
     }// </editor-fold>
-
-//    // https://www.baeldung.com/run-shell-command-in-java
-//    private static class StreamGobbler implements Runnable {
-//
-//        private InputStream inputStream;
-//        private Consumer<String> consumer;
-//
-//        public StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
-//            this.inputStream = inputStream;
-//            this.consumer = consumer;
-//        }
-//
-//        @Override
-//        public void run() {
-//            new BufferedReader(new InputStreamReader(inputStream)).lines()
-//                    .forEach(consumer);
-//        }
-//    }
 }
