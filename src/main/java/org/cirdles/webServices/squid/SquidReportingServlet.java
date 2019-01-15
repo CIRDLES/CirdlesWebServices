@@ -119,10 +119,10 @@ public class SquidReportingServlet extends HttpServlet {
                 List<String> argList = Arrays.asList(arguments);
                 Process process = new ProcessBuilder(argList).start();
 
-                // https://www.baeldung.com/run-shell-command-in-java
-                StreamGobbler streamGobbler
-                        = new StreamGobbler(process.getErrorStream(), System.err::println);
-                Executors.newSingleThreadExecutor().submit(streamGobbler);
+//                // https://www.baeldung.com/run-shell-command-in-java
+//                StreamGobbler streamGobbler
+//                        = new StreamGobbler(process.getErrorStream(), System.err::println);
+//                Executors.newSingleThreadExecutor().submit(streamGobbler);
                 int exitCode = process.waitFor();
                 assert exitCode == 0;
 
@@ -148,21 +148,21 @@ public class SquidReportingServlet extends HttpServlet {
         return "Squid Reporting Servlet";
     }// </editor-fold>
 
-    // https://www.baeldung.com/run-shell-command-in-java
-    private static class StreamGobbler implements Runnable {
-
-        private InputStream inputStream;
-        private Consumer<String> consumer;
-
-        public StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
-            this.inputStream = inputStream;
-            this.consumer = consumer;
-        }
-
-        @Override
-        public void run() {
-            new BufferedReader(new InputStreamReader(inputStream)).lines()
-                    .forEach(consumer);
-        }
-    }
+//    // https://www.baeldung.com/run-shell-command-in-java
+//    private static class StreamGobbler implements Runnable {
+//
+//        private InputStream inputStream;
+//        private Consumer<String> consumer;
+//
+//        public StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
+//            this.inputStream = inputStream;
+//            this.consumer = consumer;
+//        }
+//
+//        @Override
+//        public void run() {
+//            new BufferedReader(new InputStreamReader(inputStream)).lines()
+//                    .forEach(consumer);
+//        }
+//    }
 }
