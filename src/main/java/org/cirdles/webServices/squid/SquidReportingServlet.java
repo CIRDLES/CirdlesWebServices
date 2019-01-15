@@ -15,23 +15,25 @@
  */
 package org.cirdles.webServices.squid;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.cirdles.squid.web.SquidReportingService;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.xml.sax.SAXException;
@@ -83,11 +85,11 @@ public class SquidReportingServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        HttpSession session = request.getSession();
+
+        // this seems to hang needs work HttpSession session = request.getSession();
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "attachment; filename=squid-reports.zip");
-        
+
         boolean useSBM = ServletRequestUtils.getBooleanParameter(request, "useSBM", true);
         boolean useLinFits = ServletRequestUtils.getBooleanParameter(request, "userLinFits", false);
         String refMatFilter = ServletRequestUtils.getStringParameter(request, "refMatFilter", "");
@@ -95,13 +97,13 @@ public class SquidReportingServlet extends HttpServlet {
         String preferredIndexIsotopeName = ServletRequestUtils.getStringParameter(request, "prefIndexIso", "PB_204");
         Part filePart = request.getPart("prawnFile");
         Part filePart2 = request.getPart("taskFile");
-        
+
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
         InputStream fileStream = filePart.getInputStream();
         InputStream fileStream2 = filePart2.getInputStream();
-        
+
         SquidReportingService handler = new SquidReportingService();
-        
+
         try {
             File report = null;
             report = handler.generateReports(
@@ -112,20 +114,28 @@ public class SquidReportingServlet extends HttpServlet {
             // note: gdrive runs as root: sudo chmod +s gdrive
             try {
                 //if (SystemUtils.IS_OS_LINUX) {
-                    String[] arguments = new String[]{
-                        "/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "/opt/tomcat9/temp/reports.zip"};
-                    List<String> argList = Arrays.asList(arguments);
-                    Process proc = new ProcessBuilder(argList).start();
+                String[] arguments = new String[]{
+                    "/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "/opt/tomcat9/temp/reports.zip"};
+                List<String> argList = Arrays.asList(arguments);
+                Process process = new ProcessBuilder(argList).start();
+
+                // https://www.baeldung.com/run-shell-command-in-java
+                StreamGobbler streamGobbler
+                        = new StreamGobbler(process.getInputStream(), System.err::println);
+                Executors.newSingleThreadExecutor().submit(streamGobbler);
+                int exitCode = process.waitFor();
+                //assert exitCode == 0;
+
                 //}
-            } catch (IOException iOException) {
+            } catch (IOException | InterruptedException iOException) {
             }
 
             response.setContentLengthLong(report.length());
             IOUtils.copy(new FileInputStream(report), response.getOutputStream());
-            
+
         } catch (IOException | JAXBException | SAXException e) {
             System.err.println(e);
-        }       
+        }
     }
 
     /**
@@ -137,4 +147,22 @@ public class SquidReportingServlet extends HttpServlet {
     public String getServletInfo() {
         return "Squid Reporting Servlet";
     }// </editor-fold>
+
+    // https://www.baeldung.com/run-shell-command-in-java
+    private static class StreamGobbler implements Runnable {
+
+        private InputStream inputStream;
+        private Consumer<String> consumer;
+
+        public StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
+            this.inputStream = inputStream;
+            this.consumer = consumer;
+        }
+
+        @Override
+        public void run() {
+            new BufferedReader(new InputStreamReader(inputStream)).lines()
+                    .forEach(consumer);
+        }
+    }
 }
