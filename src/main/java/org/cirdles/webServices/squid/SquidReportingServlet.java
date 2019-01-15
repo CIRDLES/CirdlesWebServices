@@ -121,10 +121,10 @@ public class SquidReportingServlet extends HttpServlet {
 
                 // https://www.baeldung.com/run-shell-command-in-java
                 StreamGobbler streamGobbler
-                        = new StreamGobbler(process.getInputStream(), System.err::println);
+                        = new StreamGobbler(process.getErrorStream(), System.err::println);
                 Executors.newSingleThreadExecutor().submit(streamGobbler);
                 int exitCode = process.waitFor();
-                //assert exitCode == 0;
+                assert exitCode == 0;
 
                 //}
             } catch (IOException | InterruptedException iOException) {
