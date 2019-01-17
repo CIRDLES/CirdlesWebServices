@@ -110,27 +110,29 @@ public class SquidReportingServlet extends HttpServlet {
                     fileName, fileStream, fileStream2, useSBM, useLinFits, refMatFilter, concRefMatFilter,
                     preferredIndexIsotopeName).toFile();
 
-            // now if Linux. we are going to assume cirdles.cs.cofc.edu and write to Google Drive for now
-            // note: gdrive runs as root: sudo chmod +s gdrive
-            Thread thread = new Thread() {
-                public void run() {
-                    System.out.println("Thread Running");
-                    try {
-                        String[] arguments = new String[]{
-                            System.getenv("CATALINA_HOME") + "/gdrive", "mkdir", "JIMMY"};
-                        //"/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "/opt/tomcat9/temp/reports.zip"};
-                        List<String> argList = Arrays.asList(arguments);
-                        Process process = new ProcessBuilder(argList).start();
-
-                        int exitCode = process.waitFor();
-                        assert exitCode == 0;
-
-                    } catch (IOException | InterruptedException iOException) {
-                    }
-                }
-            };
-
-            thread.start();
+//            // now if Linux. we are going to assume cirdles.cs.cofc.edu and write to Google Drive for now
+//            // note: gdrive runs as root: sudo chmod +s gdrive
+//            Thread thread = new Thread() {
+//                public void run() {
+//                    System.out.println("Thread Running");
+//                    try {
+//                        String[] arguments = new String[]{
+//                            System.getenv("CATALINA_HOME") + "/gdrive", "mkdir", "JIMMY"};
+//                        //"/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "/opt/tomcat9/temp/reports.zip"};
+//                        List<String> argList = Arrays.asList(arguments);
+//                         
+//                        ProcessBuilder processBuilder = new ProcessBuilder(argList);
+//                        Process process = processBuilder.start();
+//
+//                        int exitCode = process.waitFor();
+//                        assert exitCode == 0;
+//
+//                    } catch (IOException | InterruptedException iOException) {
+//                    }
+//                }
+//            };
+//
+//            thread.start();
 
             response.setContentLengthLong(report.length());
             IOUtils.copy(new FileInputStream(report), response.getOutputStream());
