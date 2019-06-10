@@ -12,6 +12,10 @@
         <servlet-name>AmbapoServlet</servlet-name>
         <servlet-class>org.cirdles.webServices.ambapo.AmbapoServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TopsoilServlet</servlet-name>
+        <servlet-class>org.cirdles.webServices.topsoil.TopsoilServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CalamariServlet</servlet-name>
         <url-pattern>/prawn</url-pattern>
@@ -23,6 +27,10 @@
     <servlet-mapping>
         <servlet-name>AmbapoServlet</servlet-name>
         <url-pattern>/ambapo/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TopsoilServlet</servlet-name>
+        <url-pattern>/topsoil</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
