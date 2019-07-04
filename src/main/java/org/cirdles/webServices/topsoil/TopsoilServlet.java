@@ -65,13 +65,6 @@ public class TopsoilServlet extends HttpServlet {
             return;
         }
 
-        // Check that content type is some kind of text
-        String contentType = filePart.getContentType();
-        if (! contentType.matches("text/(.*)")) {
-            response.sendError(415, "Unsupported file content: " + contentType);
-            return;
-        }
-
         // Convert data into a string
         Path filePath = Paths.get(filePart.getSubmittedFileName());
         String fileName = filePath.getFileName().toString();
