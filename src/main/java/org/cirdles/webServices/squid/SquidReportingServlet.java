@@ -15,17 +15,11 @@
  */
 package org.cirdles.webServices.squid;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -107,7 +101,7 @@ public class SquidReportingServlet extends HttpServlet {
         try {
             File report = null;
             report = handler.generateReports(
-                    fileName, fileStream, fileStream2, useSBM, useLinFits, refMatFilter, concRefMatFilter,
+                    "WebProject", fileName, fileStream, fileStream2, useSBM, useLinFits, refMatFilter, concRefMatFilter,
                     preferredIndexIsotopeName).toFile();
 
 //            // now if Linux. we are going to assume cirdles.cs.cofc.edu and write to Google Drive for now
