@@ -1,6 +1,5 @@
 package org.cirdles.webServices.topsoil;
 
-import org.apache.commons.io.IOUtils;
 import org.cirdles.topsoil.data.DataTable;
 import org.cirdles.topsoil.data.DataTemplate;
 import org.cirdles.topsoil.file.Delimiter;
@@ -19,6 +18,7 @@ import javax.servlet.http.Part;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.apache.poi.util.IOUtils;
 
 @MultipartConfig
 public class TopsoilServlet extends HttpServlet {
@@ -68,7 +68,7 @@ public class TopsoilServlet extends HttpServlet {
         // Convert data into a string
         Path filePath = Paths.get(filePart.getSubmittedFileName());
         String fileName = filePath.getFileName().toString();
-        String dataString = IOUtils.toString(filePart.getInputStream(), "UTF-8");
+        String dataString = IOUtils.toByteArray(filePart.getInputStream()).toString();
 
         // Determine the data delimiter based on the file extension, or by guessing from the text
         TableFileExtension extension = TableFileExtension.getExtensionFromPath(filePath);
