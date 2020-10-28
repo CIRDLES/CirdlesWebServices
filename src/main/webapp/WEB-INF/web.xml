@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
     <servlet>
         <servlet-name>SquidReportingServlet</servlet-name>
         <servlet-class>org.cirdles.webServices.squid.SquidReportingServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SquidInkServlet</servlet-name>
+        <servlet-class>org.cirdles.webServices.squid.SquidReportingServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SquidInkLoginServlet</servlet-name>
+        <servlet-class>org.cirdles.webServices.squidink.SquidInkLoginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SquidInkRegisterServlet</servlet-name>
+        <servlet-class>org.cirdles.webServices.squidink.SquidInkRegisterServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>CalamariServlet</servlet-name>
@@ -16,9 +29,29 @@
         <servlet-name>TopsoilServlet</servlet-name>
         <servlet-class>org.cirdles.webServices.topsoil.TopsoilServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SquidInkTestServlet</servlet-name>
+        <servlet-class>org.cirdles.webServices.squidink.SquidInkTester</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CalamariServlet</servlet-name>
         <url-pattern>/prawn</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SquidInkServlet</servlet-name>
+        <url-pattern>/squidinkserve</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SquidInkLoginServlet</servlet-name>
+        <url-pattern>/squidinklogin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SquidInkRegisterServlet</servlet-name>
+        <url-pattern>/squidinkregister</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SquidInkTestServlet</servlet-name>
+        <url-pattern>/squidinktester</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SquidReportingServlet</servlet-name>
@@ -38,11 +71,11 @@
         </session-timeout>
     </session-config>
     <filter>
-        <filter-name>CorsFilter</filter-name>
-        <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+        <filter-name>CORS</filter-name>
+        <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
         <init-param>
             <param-name>cors.allowOrigin</param-name>
-            <param-value>*</param-value>
+            <param-value>http://localhost:5000,http://localhost:80,http://localhost:8080</param-value>
         </init-param>
         <init-param>
             <param-name>cors.allowed.methods</param-name>
@@ -62,7 +95,7 @@
         </init-param>
     </filter>
     <filter-mapping>
-        <filter-name>CorsFilter</filter-name>
+        <filter-name>CORS</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 </web-app>

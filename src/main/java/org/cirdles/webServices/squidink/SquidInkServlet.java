@@ -1,3 +1,4 @@
+package org.cirdles.webServices.squidink;
 /*
  * Copyright 2019 James F. Bowring and CIRDLES.org.
  *
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cirdles.webServices.squid;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
  * @author ty
  */
 @MultipartConfig
-public class SquidReportingServlet extends HttpServlet {
+public class SquidInkServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -120,7 +120,7 @@ public class SquidReportingServlet extends HttpServlet {
 //                            System.getenv("CATALINA_HOME") + "/gdrive", "mkdir", "JIMMY"};
 //                        //"/home/gdrive", "upload", "--parent", "19RHlWggIw5fqWQUO1xs3M2iWjD82Ph3m", "/opt/tomcat9/temp/reports.zip"};
 //                        List<String> argList = Arrays.asList(arguments);
-//                         
+//
 //                        ProcessBuilder processBuilder = new ProcessBuilder(argList);
 //                        Process process = processBuilder.start();
 //
@@ -152,3 +152,4 @@ public class SquidReportingServlet extends HttpServlet {
         return "Squid Reporting Servlet";
     }// </editor-fold>
 }
+
