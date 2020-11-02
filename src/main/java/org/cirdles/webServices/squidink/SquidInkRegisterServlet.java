@@ -70,12 +70,12 @@ public class SquidInkRegisterServlet extends HttpServlet {
 
             //If email does not exist in table, push all values to table
             PreparedStatement prep = connection.prepareStatement("select userID from Users where userID = ?");
-            prep.setString(1, array[4]);
+            prep.setString(1, holder2[1]);
             ResultSet rs = prep.executeQuery();
             if( rs.next() == false ) {
                 PreparedStatement input = connection.prepareStatement("insert into Users (userID, userName, password) values (?, ?, ?)");
-                input.setString(1, holder2[1]);
-                input.setString(2, holder2[3]);
+                input.setString(1, holder2[3]);
+                input.setString(2, holder2[1]);
                 input.setString(3, holder2[5]);
                 input.execute();
                 connection.close();

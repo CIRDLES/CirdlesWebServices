@@ -58,8 +58,7 @@ public class SquidInkTester extends HttpServlet {
         String holder = Arrays.toString(array);
         String[] holder2 = holder.split(",");
         System.out.println(holder2[1]);
-        System.out.println(holder2[3]);
-        System.out.println(holder2[5]);
+        System.out.println(holder2[3].replace("}","").replace("]",""));
 
         response.getWriter().println("Request Received: " + body);
     }

@@ -7,10 +7,20 @@ package org.cirdles.webServices.squidink;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Calendar;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
+import org.apache.commons.io.IOUtils;
 import org.cirdles.webServices.requestUtils.*;
 import org.cirdles.ambapo.*;
 import org.json.JSONException;
@@ -48,26 +58,69 @@ public class SquidInkLoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        JSONObject json = new JSONObject();
-        String uri = request.getRequestURI().toLowerCase();
-        String[] pieces = uri.split("/");
-        if (pieces.length >= 4) {
-            int lastIndex = pieces.length - 1;
-            String param1 = pieces[lastIndex - 1];
-            String param2 = pieces[lastIndex];
-            // UTM -> LatLong
-            if (param1.equals("utm") && param2.equals("latlong")) {
-                json = handleUtmToLatlong(request, response);
-            } else if (param1.equals("latlong") && param2.equals("utm")) {
-                json = handleLatlongToUtm(request, response);
-            } else if (param1.equals("latlong") && param2.equals("latlong")) {
-                json = handleLatlongToLatlong(request, response);
+        try {
+            //Initialize DB Connection and Statement loading
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Richard McCarty/Downloads/CirdlesWeb/CirdlesWebServices-master/users.db");
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            //Separate response data
+            String body = IOUtils.toString(request.getReader());
+            body = body.replace("\"","");
+            String[] array = body.split(":");
+            String holder = Arrays.toString(array);
+            String[] holder2 = holder.split(",");
+            PreparedStatement prep = connection.prepareStatement("select * from Users where userID = ?");
+            prep.setString(1, holder2[1]);
+            ResultSet rs = prep.executeQuery();
+            if( !rs.next() ) {
+                connection.close();
+                response.getWriter().println("Email Doesn't Exist");
             }
-        } else {
-            json = JSONUtils.createResponseErrorJSON("Invalid URI");
+            else {
+                holder2[1] = holder2[1].replace(" ","");
+                holder2[3] = holder2[3].replace("}","").replace("]","").replace(" ", "");
+                //Check Login presence in DB
+                //Calendar for date-referenced JWT
+                Calendar calNow = Calendar.getInstance();
+                Calendar calFuture = Calendar.getInstance();
+                Date curDate = new Date();
+                calNow.setTime(curDate);
+                calFuture.add(Calendar.YEAR, 1);
+                if(rs.getString("password").replace(" ", "").equals(holder2[3])) {
+
+                    try {
+                        Algorithm algorithm = Algorithm.HMAC256("$B&E)H+MbQeThWmZq4t7w!z%C*F-JaNc");
+                        String token = JWT.create()
+                                .withClaim("id", holder2[1])
+                                .withIssuedAt(calNow.getTime())
+                                .withExpiresAt(calFuture.getTime())
+                                .withIssuer("auth0")
+                                .sign(algorithm);
+                        connection.close();
+                        response.setContentType("application/json");
+                        response.getWriter().println(token);
+                    }
+                    catch (JWTCreationException exception){
+                        System.out.println(exception);
+                        response.getWriter().println(exception.getMessage());
+                    }
+                }
+
+                else{
+                    connection.close();
+                    response.getWriter().println("Password is Incorrect");
+                }
+            }
+            //json = JSONUtils.createResponseErrorJSON("Invalid URI");
+
         }
-        response.setContentType("application/json");
-        response.getWriter().println(json);
+        catch(SQLException | ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            response.getWriter().println(e.getMessage());
+        }
     }
 
     private JSONObject handleUtmToLatlong(HttpServletRequest request,
