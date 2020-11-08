@@ -18,6 +18,10 @@
         <servlet-class>org.cirdles.webServices.squidink.SquidInkRegisterServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>SquidInkStartupServlet</servlet-name>
+        <servlet-class>org.cirdles.webServices.squidink.SquidInkStartupServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>CalamariServlet</servlet-name>
         <servlet-class>org.cirdles.webServices.calamari.CalamariServlet</servlet-class>
     </servlet>
@@ -50,6 +54,10 @@
         <url-pattern>/squidinkregister</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>SquidInkStartupServlet</servlet-name>
+        <url-pattern>/squidinkstartup</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>SquidInkTestServlet</servlet-name>
         <url-pattern>/squidinktester</url-pattern>
     </servlet-mapping>
@@ -65,17 +73,19 @@
         <servlet-name>TopsoilServlet</servlet-name>
         <url-pattern>/topsoil</url-pattern>
     </servlet-mapping>
+
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
+
     <filter>
         <filter-name>CORS</filter-name>
         <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
         <init-param>
             <param-name>cors.allowOrigin</param-name>
-            <param-value>http://localhost:5000,http://localhost:80,http://localhost8080</param-value>
+            <param-value>http://localhost:5000,http://localhost:80,http://localhost:8080</param-value>
         </init-param>
         <init-param>
             <param-name>cors.allowed.methods</param-name>
@@ -94,6 +104,7 @@
             <param-value>Accept, Origin, X-Requested-With, Content-Type, Last-Modified</param-value>
         </init-param>
     </filter>
+
     <filter-mapping>
         <filter-name>CORS</filter-name>
         <url-pattern>/*</url-pattern>
