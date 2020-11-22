@@ -68,6 +68,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-zip</artifactId>
+            <version>1.14</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>3.11.0</version>
