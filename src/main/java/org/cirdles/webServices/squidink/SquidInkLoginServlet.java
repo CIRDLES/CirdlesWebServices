@@ -61,7 +61,7 @@ public class SquidInkLoginServlet extends HttpServlet {
         try {
             //Initialize DB Connection and Statement loading
             Class.forName("org.sqlite.JDBC");
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Richard McCarty/Downloads/CirdlesWeb/CirdlesWebServices-master/users.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:/Users/joshdgilley/Documents/College_of_Charleston/Fall_2020/Tutorial/cirdlesWebUI/CirdlesWebServices-master/users.db");
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
