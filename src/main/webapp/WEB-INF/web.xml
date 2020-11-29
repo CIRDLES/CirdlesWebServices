@@ -18,10 +18,6 @@
         <servlet-class>org.cirdles.webServices.squidink.SquidInkRegisterServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>SquidInkStartupServlet</servlet-name>
-        <servlet-class>org.cirdles.webServices.squidink.SquidInkStartupServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>CalamariServlet</servlet-name>
         <servlet-class>org.cirdles.webServices.calamari.CalamariServlet</servlet-class>
     </servlet>
@@ -85,13 +81,11 @@
         <servlet-name>TopsoilServlet</servlet-name>
         <url-pattern>/topsoil</url-pattern>
     </servlet-mapping>
-
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
-
     <filter>
         <filter-name>CORS</filter-name>
         <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
@@ -116,7 +110,6 @@
             <param-value>Accept, Origin, X-Requested-With, Content-Type, Last-Modified</param-value>
         </init-param>
     </filter>
-
     <filter-mapping>
         <filter-name>CORS</filter-name>
         <url-pattern>/*</url-pattern>
