@@ -84,21 +84,21 @@ public class SquidReportingServlet extends HttpServlet {
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "attachment; filename=squid-reports.zip");
 
-        boolean useSBM = ServletRequestUtils.getBooleanParameter(request, "useSBM", true);
-        boolean useLinFits = ServletRequestUtils.getBooleanParameter(request, "userLinFits", false);
-        String refMatFilter = ServletRequestUtils.getStringParameter(request, "refMatFilter", "");
-        String concRefMatFilter = ServletRequestUtils.getStringParameter(request, "concRefMatFilter", "");
-        String preferredIndexIsotopeName = ServletRequestUtils.getStringParameter(request, "prefIndexIso", "PB_204");
-        Part filePart = request.getPart("prawnFile");
-        Part filePart2 = request.getPart("taskFile");
-
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-        InputStream fileStream = filePart.getInputStream();
-        InputStream fileStream2 = filePart2.getInputStream();
-
-        SquidReportingService handler = new SquidReportingService();
-
         try {
+            boolean useSBM = ServletRequestUtils.getBooleanParameter(request, "useSBM", true);
+            boolean useLinFits = ServletRequestUtils.getBooleanParameter(request, "userLinFits", false);
+            String refMatFilter = ServletRequestUtils.getStringParameter(request, "refMatFilter", "");
+            String concRefMatFilter = ServletRequestUtils.getStringParameter(request, "concRefMatFilter", "");
+            String preferredIndexIsotopeName = ServletRequestUtils.getStringParameter(request, "prefIndexIso", "PB_204");
+            Part filePart = request.getPart("prawnFile");
+            Part filePart2 = request.getPart("taskFile");
+
+            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            InputStream fileStream = filePart.getInputStream();
+            InputStream fileStream2 = filePart2.getInputStream();
+
+            SquidReportingService handler = new SquidReportingService();
+
             File report = null;
             report = handler.generateReports(
                     "WebProject", fileName, fileStream, fileStream2, useSBM, useLinFits, refMatFilter, concRefMatFilter,
@@ -127,7 +127,6 @@ public class SquidReportingServlet extends HttpServlet {
 //            };
 //
 //            thread.start();
-
             response.setContentLengthLong(report.length());
             IOUtils.copy(new FileInputStream(report), response.getOutputStream());
 
