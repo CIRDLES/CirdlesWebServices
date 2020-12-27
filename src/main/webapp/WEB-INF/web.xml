@@ -13,10 +13,6 @@
         <servlet-class>org.cirdles.webServices.topsoil.TopsoilServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>CalamariServlet</servlet-name>
-        <url-pattern>/prawn</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>SquidReportingServlet</servlet-name>
         <url-pattern>/squidReporting</url-pattern>
     </servlet-mapping>
