@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Calendar;
+import java.util.Stack;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -59,9 +60,10 @@ public class SquidInkLoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            generatePortStack();
             //Initialize DB Connection and Statement loading
             Class.forName("org.sqlite.JDBC");
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:/Users/joshdgilley/Documents/College_of_Charleston/Fall_2020/Tutorial/cirdlesWebUI/CirdlesWebServices-master/users.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Richard McCarty/Downloads/CirdlesWeb/CirdlesWebServices-master/users.db");
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
@@ -122,98 +124,14 @@ public class SquidInkLoginServlet extends HttpServlet {
             response.getWriter().println(e.getMessage());
         }
     }
-
-    private JSONObject handleUtmToLatlong(HttpServletRequest request,
-                                          HttpServletResponse response) throws IOException {
-        JSONObject json = JSONUtils.extractRequestJSON(request);
-        JSONObject responseJson = new JSONObject();
-        try {
-            BigDecimal easting = BigDecimal.valueOf(json.getLong("easting"));
-            BigDecimal northing = BigDecimal.valueOf(json.getLong("northing"));
-            String hemStr = json.getString("hemisphere");
-            int zoneNumber = json.getInt("zoneNumber");
-            String zoneStr = json.getString("zoneLetter");
-            String datum = json.getString("datum");
-            if (easting != null && northing != null
-                    && hemStr != null && !hemStr.isEmpty()
-                    && zoneStr != null && !zoneStr.isEmpty()
-                    && datum != null && !datum.isEmpty()) {
-                char hemisphere = hemStr.charAt(0);
-                char zoneLetter = zoneStr.charAt(0);
-                try {
-                    UTM utm = new UTM(easting, northing, hemisphere, zoneNumber, zoneLetter);
-                    Coordinate coord = UTMToLatLong.convert(utm, datum);
-                    responseJson.put("latitude", coord.getLatitude());
-                    responseJson.put("longitude", coord.getLongitude());
-                    responseJson.put("datum", coord.getDatum());
-                } catch (Exception e) {
-                    responseJson = JSONUtils.createResponseErrorJSON("Error converting: " + e.toString());
-                }
-            } else {
-                responseJson = JSONUtils.createResponseErrorJSON("Invalid request parameters");
+    private void generatePortStack() {
+        if(this.getServletConfig().getServletContext().getAttribute("portStack") == null) {
+            Stack<Integer> portStack = new Stack<>();
+            for(int i = 8081; i < 8086; i++) {
+                portStack.push(i);
             }
-        } catch (JSONException e) {
-            responseJson = JSONUtils.createResponseErrorJSON("Invalid request parameters: " + e.getMessage());
+            this.getServletConfig().getServletContext().setAttribute("portStack", portStack);
         }
-        return responseJson;
-    }
-
-    private JSONObject handleLatlongToUtm(HttpServletRequest request,
-                                          HttpServletResponse response) throws IOException {
-        JSONObject json = JSONUtils.extractRequestJSON(request);
-        JSONObject responseJson = new JSONObject();
-        try {
-            BigDecimal latitude = BigDecimal.valueOf(json.getDouble("latitude"));
-            BigDecimal longitude = BigDecimal.valueOf(json.getDouble("longitude"));
-            String datum = json.getString("datum");
-            if (latitude != null && longitude != null
-                    && datum != null && !datum.isEmpty()) {
-                try {
-                    UTM utm = LatLongToUTM.convert(latitude, longitude, datum);
-                    responseJson.put("easting", utm.getEasting());
-                    responseJson.put("northing", utm.getNorthing());
-                    responseJson.put("hemisphere", utm.getHemisphere());
-                    responseJson.put("zoneNumber", utm.getZoneNumber());
-                    responseJson.put("zoneLetter", utm.getZoneLetter());
-                } catch (Exception e) {
-                    responseJson = JSONUtils.createResponseErrorJSON("Error converting: " + e.toString());
-                }
-            } else {
-                responseJson = JSONUtils.createResponseErrorJSON("Invalid request parameters");
-            }
-        } catch (JSONException e) {
-            responseJson = JSONUtils.createResponseErrorJSON("Invalid request parameters: " + e.getMessage());
-        }
-        return responseJson;
-    }
-
-    private JSONObject handleLatlongToLatlong(HttpServletRequest request,
-                                              HttpServletResponse response) throws IOException {
-        JSONObject json = JSONUtils.extractRequestJSON(request);
-        JSONObject responseJson = new JSONObject();
-        try {
-            BigDecimal latitude = BigDecimal.valueOf(json.getDouble("latitude"));
-            BigDecimal longitude = BigDecimal.valueOf(json.getDouble("longitude"));
-            String fromDatum = json.getString("fromDatum");
-            String toDatum = json.getString("toDatum");
-            if (latitude != null && longitude != null
-                    && fromDatum != null && !fromDatum.isEmpty()
-                    && toDatum != null && !toDatum.isEmpty()) {
-                try {
-                    Coordinate coord = LatLongToLatLong.convert(latitude, longitude, fromDatum, toDatum);
-                    responseJson.put("latitude", coord.getLatitude());
-                    responseJson.put("longitude", coord.getLongitude());
-                    responseJson.put("datum", coord.getDatum());
-                } catch (Exception e) {
-                    responseJson = JSONUtils.createResponseErrorJSON("Error converting: " + e.toString());
-                }
-            } else {
-                responseJson = JSONUtils.createResponseErrorJSON("Invalid request parameters");
-            }
-        } catch (JSONException e) {
-            responseJson = JSONUtils.createResponseErrorJSON("Invalid request parameters: " + e.getMessage());
-        }
-        return responseJson;
     }
 
     /**
