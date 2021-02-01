@@ -58,6 +58,7 @@ public class SquidInkStartupServlet extends HttpServlet {
         System.out.println(body);
         Stack<Integer> portStack = (Stack<Integer>) this.getServletConfig().getServletContext().getAttribute("portStack");
         int portNum = portStack.pop();
+            //This exec statement is unique to the local storage for userfiles
         Process process = Runtime.getRuntime()
                 .exec("docker run --mount type=bind,source=\"//c/Users/Richard McCarty/Downloads/dockerout/" + body + "\",target=\"/usr/local/user_files\" " +
                         "-p " + portNum + ":8080 squidboys");
