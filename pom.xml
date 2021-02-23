@@ -68,12 +68,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.zeroturnaround</groupId>
-            <artifactId>zt-zip</artifactId>
-            <version>1.14</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>3.11.0</version>
@@ -94,11 +88,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>5.1.3.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>3.30.1</version>
         </dependency>
         <dependency>
             <groupId>com.thetransactioncompany</groupId>
