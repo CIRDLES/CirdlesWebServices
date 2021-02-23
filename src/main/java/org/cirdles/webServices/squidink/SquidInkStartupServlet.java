@@ -54,13 +54,13 @@ public class SquidInkStartupServlet extends HttpServlet {
             throws ServletException, IOException {
        //@TODO convert source string to generic with passed formdata for final user path
         try {
+            generatePortStack();
         String body = IOUtils.toString(request.getReader()).replace("\"","");
         System.out.println(body);
         Stack<Integer> portStack = (Stack<Integer>) this.getServletConfig().getServletContext().getAttribute("portStack");
         int portNum = portStack.pop();
-            //This exec statement is unique to the local storage for userfiles
         Process process = Runtime.getRuntime()
-                .exec("docker run --mount type=bind,source=\"//c/Users/Richard McCarty/Downloads/dockerout/" + body + "\",target=\"/usr/local/user_files\" " +
+                .exec("docker run --mount type=bind,source=\"//c/Users/Richard McCarty/Downloads/aaaFileBrowser/filebrowser/users/" + body + "\",target=\"/usr/local/user_files\" " +
                         "-p " + portNum + ":8080 squidboys");
         this.getServletConfig().getServletContext().setAttribute("portStack", portStack);
         response.getWriter().println(portNum);
@@ -70,6 +70,15 @@ public class SquidInkStartupServlet extends HttpServlet {
             response.getWriter().println(e);
         }
 
+    }
+    private void generatePortStack() {
+        if(this.getServletConfig().getServletContext().getAttribute("portStack") == null) {
+            Stack<Integer> portStack = new Stack<>();
+            for(int i = 8081; i < 8086; i++) {
+                portStack.push(i);
+            }
+            this.getServletConfig().getServletContext().setAttribute("portStack", portStack);
+        }
     }
 
     /**
