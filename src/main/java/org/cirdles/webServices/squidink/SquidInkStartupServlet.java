@@ -1,28 +1,13 @@
 package org.cirdles.webServices.squidink;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
 import org.apache.commons.io.IOUtils;
-import org.cirdles.ambapo.*;
-import org.cirdles.webServices.requestUtils.JSONUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.lang.Runtime;
 import java.lang.Process;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.*;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Stack;
 
 public class SquidInkStartupServlet extends HttpServlet {
