@@ -4,7 +4,7 @@
 
     <groupId>org.cirdles</groupId>
     <artifactId>CirdlesWebServices</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <packaging>war</packaging>
 
     <name>CirdlesWebServices</name>
@@ -15,7 +15,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    
+
     <organization>
         <name>CIRDLES</name>
         <url>https://cirdles.org</url>
@@ -28,25 +28,18 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    
+
     <repositories>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-            <checksumPolicy>fail</checksumPolicy>
-        </snapshots>
         </repository>
         <repository>
             <id>redhat.com</id>
             <url>https://maven.repository.redhat.com/ga/</url>
         </repository>
     </repositories>
-    
     <dependencies>
-        
         <dependency>
             <groupId>com.github.CIRDLES.Ambapo</groupId>
             <artifactId>core</artifactId>
@@ -57,17 +50,6 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.zeroturnaround</groupId>
-            <artifactId>zt-zip</artifactId>
-            <version>1.14</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>3.11.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -81,11 +63,6 @@
             <version>5.1.3.RELEASE</version>
         </dependency>
         <dependency>
-            <groupId>com.github.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>3.30.1</version>
-        </dependency>
-        <dependency>
             <groupId>com.thetransactioncompany</groupId>
             <artifactId>cors-filter</artifactId>
             <version>2.4</version>
@@ -95,7 +72,7 @@
             <artifactId>json</artifactId>
             <version>20180130</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.github.cirdles.squid</groupId>
             <artifactId>squidCore</artifactId>
@@ -107,7 +84,7 @@
             <version>master-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.github.marottajb.Topsoil</groupId>
+            <groupId>com.github.cirdles.topsoil</groupId>
             <artifactId>topsoilCore</artifactId>
             <version>master-SNAPSHOT</version>
         </dependency>
