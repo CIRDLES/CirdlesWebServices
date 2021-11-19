@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
+import org.cirdles.squid.exceptions.SquidException;
 import org.cirdles.squid.web.SquidReportingService;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.xml.sax.SAXException;
@@ -78,7 +79,7 @@ public class SquidReportingServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException {
 
         // this seems to hang needs work HttpSession session = request.getSession();
         response.setContentType("application/zip");
@@ -130,7 +131,7 @@ public class SquidReportingServlet extends HttpServlet {
             response.setContentLengthLong(report.length());
             IOUtils.copy(new FileInputStream(report), response.getOutputStream());
 
-        } catch (IOException | JAXBException | SAXException e) {
+        } catch (IOException | SquidException  e) {
             System.err.println(e);
         }
     }
