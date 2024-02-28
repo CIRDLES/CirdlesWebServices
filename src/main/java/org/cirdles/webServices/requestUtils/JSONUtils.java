@@ -16,7 +16,7 @@
 package org.cirdles.webServices.requestUtils;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 
 /**

@@ -20,12 +20,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
 import org.cirdles.squid.exceptions.SquidException;
@@ -86,11 +86,11 @@ public class SquidReportingServlet extends HttpServlet {
         response.setHeader("Content-Disposition", "attachment; filename=squid-reports.zip");
 
         try {
-            boolean useSBM = ServletRequestUtils.getBooleanParameter(request, "useSBM", true);
-            boolean useLinFits = ServletRequestUtils.getBooleanParameter(request, "userLinFits", false);
-            String refMatFilter = ServletRequestUtils.getStringParameter(request, "refMatFilter", "");
-            String concRefMatFilter = ServletRequestUtils.getStringParameter(request, "concRefMatFilter", "");
-            String preferredIndexIsotopeName = ServletRequestUtils.getStringParameter(request, "prefIndexIso", "PB_204");
+            boolean useSBM = Boolean.parseBoolean(request.getParameter("useSBM"));
+            boolean useLinFits = Boolean.parseBoolean(request.getParameter("userLinFits"));
+            String refMatFilter = request.getParameter("refMatFilter");
+            String concRefMatFilter = request.getParameter("concRefMatFilter");
+            String preferredIndexIsotopeName = request.getParameter("prefIndexIso");
             Part filePart = request.getPart("prawnFile");
             Part filePart2 = request.getPart("taskFile");
 

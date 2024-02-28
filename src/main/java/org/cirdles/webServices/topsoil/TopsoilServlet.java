@@ -9,12 +9,12 @@ import org.cirdles.topsoil.file.parser.DataParser;
 import org.json.JSONObject;
 import org.springframework.web.bind.ServletRequestUtils;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,7 +50,7 @@ public class TopsoilServlet extends HttpServlet {
             response.sendError(400, "No table file provided.");
             return;
         }
-        String templateName = ServletRequestUtils.getStringParameter(request, "template");
+        String templateName = request.getParameter( "template");
         if (templateName == null) {
             response.sendError(400, "No data template provided.");
             return;
